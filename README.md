@@ -1,23 +1,81 @@
-# Copy Qiita links in tables
+## Copy Qiita / Zenn のリンクを一括コピーする拡張機能
 
-This is a minimal Chrome extension (Manifest V3).
+この拡張機能は、現在のタブ上に表示されているページから Qiita（qiita.com）や Zenn（zenn.dev）の記事リンクを抽出して、改行区切りでまとめてクリップボードにコピーするシンプルな Chrome 拡張（Manifest V3）です。ポップアップの「Copy links」ボタンを押すだけで動作します。
 
-What it does
+特徴
 
-- When you click the extension toolbar icon, it finds all <table> elements on the current page, extracts all links whose href starts with `https://qiita.com`, joins them with newlines (one link per line), and copies the resulting text to the clipboard.
+- Qiita と Zenn の両方に対応。ページのホスト名を判定して、適切なヒューリスティックを使い分けます。
+- 自動コピーに失敗した場合は、ポップアップ内にコピー用のテキストエリアを表示して手動でコピーできます。
+- 動作はすべてユーザーのアクティブなタブ上で完結し、外部送信は行いません。
 
-Do newlines work in the clipboard?
+動作の詳細
 
-- Yes. Clipboard text can contain newlines. When you paste into editors or textarea fields, the newline characters will be preserved.
+- ホスト判定
 
-How to load locally
+  - 拡張ポップアップはまずアクティブなタブのホスト名を確認します。
+  - `qiita.com` を含むホストなら Qiita 用のヒューリスティック（表要素中心）、`zenn.dev` なら Zenn 用のヒューリスティック（ページ全体を検索）を優先して実行します。
 
-1. Open Chrome and go to chrome://extensions
-2. Enable "Developer mode"
-3. Click "Load unpacked" and select this folder (`copy-qiita-ranking`)
-4. Visit a page with tables containing Qiita links and click the extension icon.
+- Qiita のヒューリスティック
 
-Notes
+  - ページ内の `<table>` 要素を走査し、各アンカーの `href` を確認します。
+  - 絶対 URL で `https://qiita.com`（あるいは指定プレフィックス）を先頭に持ち、`/items/` を含むものを記事リンクとして採用します。
+  - 相対パス（例: `/user/items/xxxxx`）のように先頭が `/` でかつ `/items/` を含む場合は、Qiita のプレフィックスを付けて正規化します。
 
-- If clipboard write fails due to site security/policy, the extension will show a prompt with the text so you can copy manually.
-- This extension uses the page's clipboard API (so the page origin must allow it). It runs the script directly in the page context.
+- Zenn のヒューリスティック
+
+  - ページ内のすべてのアンカーを対象に走査します。
+  - `https://zenn.dev`（あるいは指定プレフィックス）を先頭に持ち、かつ `/articles/` または `/books/` を含む URL を記事リンクとして採用します。
+
+- フォールバック動作
+
+  - ホストが判別できない場合はまず Qiita ヒューリスティックを試し、見つからなければ Zenn ヒューリスティックを試します。
+  - ホストが判別できても、優先ヒューリスティックでリンクが見つからない場合は逆のヒューリスティックを試して検出率を上げます。
+
+- 重複排除
+  - 同一 URL の重複は除外して一意なリストを作成します。
+
+コピー方法（優先順）
+
+1. ポップアップ内での navigator.clipboard.writeText
+2. ポップアップ内の一時 textarea と document.execCommand('copy') を使うフォールバック
+3. ページコンテキストにスクリプトを注入してページ側の clipboard API で書き込む
+
+どれも失敗した場合は、ポップアップ内にコピー済みテキストを表示するテキストエリアが出るので手動でコピーできます。
+
+使い方（ローカルでの読み込み）
+
+1. Chrome を開き chrome://extensions にアクセス
+2. 右上の "デベロッパーモード" を有効にする
+3. "パッケージ化されていない拡張機能を読み込む"（Load unpacked）をクリックし、このフォルダ（`copy-links`）を選択
+4. 任意の Qiita または Zenn の一覧ページ（例: 記事一覧やランキング、タグ一覧など）を開き、拡張のアイコンをクリックしてポップアップの「Copy links」ボタンを押す
+
+注意・トラブルシューティング
+
+- 自動でクリップボードに入らない
+
+  - ブラウザやページのセキュリティポリシーにより clipboard API が拒否される場合があります。その場合はポップアップに表示されるテキストエリアから手動でコピーしてください。
+
+- 期待するリンクが見つからない
+
+  - Qiita の場合、拡張はテーブル要素内の `/items/` を含むリンクを優先的に抽出します。もし別レイアウト（カード表示など）だと検出できない可能性があります。その場合、一覧ページのレイアウトに合わせて拡張を修正する必要があります。
+
+- 権限・プライバシー
+  - 使用する権限: `scripting`, `activeTab`, `tabs`（ページにスクリプトを注入してリンク抽出や、必要に応じてページ側のクリップボード API を利用するため）。
+  - ページの内容はローカルで解析するのみで外部に送信しません。
+
+開発メモ
+
+- メイン実装ファイル
+  - `background.js` — アクティブタブ上でのリンク収集ロジック（ドメイン別のヒューリスティックを実装）
+  - `popup.js` — ポップアップの UI とコピー処理（複数のフォールバックを含む）
+  - `popup.html` — ポップアップの HTML
+  - `manifest.json` — マニフェスト（Manifest V3）
+
+要望 or 変更案
+
+- Qiita 以外のパターン（カード表示など）や、追加のサイトに対応したい場合は、`background.js` のドメイン別ロジックを拡張すると良いです。
+- README の英語版が必要であれば追加できます。
+
+ライセンス
+
+特に指定がなければご自由にお使いください（必要なら明示的に追加します）。
