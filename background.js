@@ -25,16 +25,39 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const links = [];
 
             if (domainChoice === "qiita") {
-              // Preserve previous behavior: only search inside <table> elements
+              // Only search inside <table> elements and include only article links
+              // that contain "/items/". Normalize relative links that start with
+              // "/" to absolute URLs using the qiita prefix.
               const tables = Array.from(document.getElementsByTagName("table"));
               tables.forEach((table) => {
                 const anchors = table.getElementsByTagName("a");
                 for (const a of anchors) {
                   const raw = a.getAttribute("href") || "";
                   const href = raw.trim();
-                  if (href.startsWith(prefix) && !seen.has(href)) {
-                    seen.add(href);
-                    links.push(href);
+                  // Skip empty
+                  if (!href) continue;
+
+                  let finalUrl = null;
+
+                  // Absolute Qiita links: must start with the prefix and contain /items/
+                  if (
+                    href.startsWith(prefix) &&
+                    href.indexOf("/items/") !== -1
+                  ) {
+                    finalUrl = href;
+                  }
+
+                  // Relative links like '/user/items/xxxxx' -> normalize
+                  else if (
+                    href.startsWith("/") &&
+                    href.indexOf("/items/") !== -1
+                  ) {
+                    finalUrl = prefix + href;
+                  }
+
+                  if (finalUrl && !seen.has(finalUrl)) {
+                    seen.add(finalUrl);
+                    links.push(finalUrl);
                   }
                 }
               });
