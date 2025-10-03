@@ -3,9 +3,10 @@
   "name": "Copy Qiita links in tables",
   "version": "1.0",
   "description": "Click the toolbar icon to copy all https://qiita.com links contained inside table elements on the current page to the clipboard (one per line).",
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "tabs"],
   "action": {
-    "default_title": "Copy Qiita links"
+    "default_title": "Copy links",
+    "default_popup": "popup.html"
   },
   "background": {
     "service_worker": "background.js"
