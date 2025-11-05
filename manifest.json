@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Copy Qiita links in tables",
-  "version": "1.0",
-  "description": "Click the toolbar icon to copy all https://qiita.com links contained inside table elements on the current page to the clipboard (one per line).",
-  "permissions": ["scripting", "activeTab", "tabs"],
+  "name": "Copy All Tab URLs",
+  "version": "1.1",
+  "description": "Click the toolbar icon to copy URLs of all open tabs to the clipboard (one per line).",
+  "permissions": ["scripting", "tabs"],
   "action": {
     "default_title": "Copy links",
     "default_popup": "popup.html"

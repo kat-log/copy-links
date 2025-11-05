@@ -9,11 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     status.style.color = isError ? "red" : "#333";
   }
 
-  // Ask background to collect links from the active tab for a given domain key
-  function collectFor(domain) {
+  // Collect URLs from all open tabs in the current window
+  async function collectAllTabUrls() {
     return new Promise((resolve) => {
-      chrome.runtime.sendMessage({ type: "collectLinks", domain }, (res) => {
-        resolve(res || { success: false, links: [], error: "no response" });
+      chrome.tabs.query({ currentWindow: true }, (tabs) => {
+        const urls = tabs.map((tab) => tab.url);
+        resolve({ success: true, links: urls });
       });
     });
   }
@@ -90,64 +91,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Main handler for the single button
   async function handleUnified() {
-    setStatus("Detecting site and collecting links...");
+    setStatus("Collecting URLs from all tabs...");
     fallback.style.display = "none";
     fallbackText.value = "";
 
-    // Inspect active tab host first to pick best domain
-    const tabs = await new Promise((resolve) =>
-      chrome.tabs.query({ active: true, currentWindow: true }, resolve)
-    );
-    const tab = tabs && tabs[0];
-    let host = "";
-    if (tab && tab.url) {
-      try {
-        const u = new URL(tab.url);
-        host = u.hostname || "";
-      } catch (e) {
-        host = "";
-      }
-    }
-
-    // Choose domain key based on host
-    let primary = null;
-    if (host.includes("qiita.com")) primary = "qiita";
-    else if (host.includes("zenn.dev")) primary = "zenn";
-
-    const tried = [];
     let collected = [];
+    const res = await collectAllTabUrls();
 
-    if (primary) {
-      setStatus(`Collecting ${primary} links...`);
-      tried.push(primary);
-      const res = await collectFor(primary);
-      if (res && res.success && res.links && res.links.length > 0) {
-        collected = res.links;
-      } else {
-        // Try the other domain as a fallback (helps if page layout differs)
-        const other = primary === "qiita" ? "zenn" : "qiita";
-        setStatus(`No ${primary} links found, trying ${other} heuristics...`);
-        tried.push(other);
-        const res2 = await collectFor(other);
-        if (res2 && res2.success && res2.links && res2.links.length > 0) {
-          collected = res2.links;
-        }
-      }
-    } else {
-      // If host unknown, try qiita then zenn heuristics to maximize chance
-      setStatus("Host not recognized. Trying Qiita heuristics...");
-      tried.push("qiita");
-      const r1 = await collectFor("qiita");
-      if (r1 && r1.success && r1.links && r1.links.length > 0) {
-        collected = r1.links;
-      } else {
-        setStatus("No Qiita links found, trying Zenn heuristics...");
-        tried.push("zenn");
-        const r2 = await collectFor("zenn");
-        if (r2 && r2.success && r2.links && r2.links.length > 0) {
-          collected = r2.links;
-        }
-      }
+    if (res && res.success && res.links && res.links.length > 0) {
+      collected = res.links;
     }
 
     if (!collected || collected.length === 0) {
