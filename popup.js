@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const copyBtn = document.getElementById("copy");
+  const copyTabsBtn = document.getElementById("copyTabs");
+  const qiitaBtn = document.getElementById("qiita");
+  const zennBtn = document.getElementById("zenn");
   const status = document.getElementById("status");
   const fallback = document.getElementById("fallback");
   const fallbackText = document.getElementById("fallbackText");
@@ -89,8 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Main handler for the single button
-  async function handleUnified() {
+  // Handler for copying all tab URLs
+  async function handleCopyTabs() {
     setStatus("Collecting URLs from all tabs...");
     fallback.style.display = "none";
     fallbackText.value = "";
@@ -103,21 +105,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!collected || collected.length === 0) {
-      setStatus(
-        `No links found using: ${tried.join(
-          ", "
-        )}. Try opening a Qiita or Zenn listing page.`,
-        true
-      );
+      setStatus("No tabs found.", true);
       return;
     }
 
     const text = collected.join("\n");
-    setStatus(`Found ${collected.length} link(s). Copying...`);
+    setStatus(`Found ${collected.length} tab(s). Copying...`);
 
     const copyResult = await tryCopyText(text, collected.length);
     if (copyResult.ok) {
-      setStatus(`Copied ${collected.length} link(s) to clipboard.`);
+      setStatus(`Copied ${collected.length} tab URL(s) to clipboard.`);
       fallback.style.display = "none";
       return;
     }
@@ -133,5 +130,56 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  copyBtn.addEventListener("click", handleUnified);
+  // Handler for copying Qiita/Zenn links from current page
+  async function handleCopyLinks(domain) {
+    setStatus("Collecting " + domain + " links...");
+    fallback.style.display = "none";
+    fallbackText.value = "";
+
+    // Ask background to collect links from the active tab
+    chrome.runtime.sendMessage(
+      { type: "collectLinks", domain },
+      async (response) => {
+        if (!response) {
+          setStatus("No response from background", true);
+          return;
+        }
+        if (!response.success) {
+          setStatus("Error: " + (response.error || "unknown"), true);
+          return;
+        }
+
+        const links = response.links || [];
+        if (links.length === 0) {
+          setStatus(
+            "No " + domain + " links found inside table elements on this page."
+          );
+          return;
+        }
+
+        const text = links.join("\n");
+        const copyResult = await tryCopyText(text, links.length);
+
+        if (copyResult.ok) {
+          setStatus(`Copied ${links.length} ${domain} link(s) to clipboard.`);
+          fallback.style.display = "none";
+          return;
+        }
+
+        // If copy to clipboard failed, show fallback textarea with content
+        fallbackText.value = text;
+        fallback.style.display = "block";
+        setStatus(
+          `Could not copy automatically (${
+            copyResult.reason || ""
+          }). Please copy manually below.`,
+          true
+        );
+      }
+    );
+  }
+
+  copyTabsBtn.addEventListener("click", handleCopyTabs);
+  qiitaBtn.addEventListener("click", () => handleCopyLinks("qiita"));
+  zennBtn.addEventListener("click", () => handleCopyLinks("zenn"));
 });
