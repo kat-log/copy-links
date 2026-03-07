@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const copyTabsBtn = document.getElementById("copyTabs");
+  const copySelectedTabsBtn = document.getElementById("copySelectedTabs");
   const qiitaBtn = document.getElementById("qiita");
   const zennBtn = document.getElementById("zenn");
   const status = document.getElementById("status");
@@ -15,6 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
   async function collectAllTabUrls() {
     return new Promise((resolve) => {
       chrome.tabs.query({ currentWindow: true }, (tabs) => {
+        const urls = tabs.map((tab) => tab.url);
+        resolve({ success: true, links: urls });
+      });
+    });
+  }
+
+  // Collect URLs from highlighted (selected) tabs in the current window
+  async function collectSelectedTabUrls() {
+    return new Promise((resolve) => {
+      chrome.tabs.query({ highlighted: true, currentWindow: true }, (tabs) => {
         const urls = tabs.map((tab) => tab.url);
         resolve({ success: true, links: urls });
       });
@@ -130,6 +141,44 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  // Handler for copying selected (highlighted) tab URLs
+  async function handleCopySelectedTabs() {
+    setStatus("Collecting URLs from selected tabs...");
+    fallback.style.display = "none";
+    fallbackText.value = "";
+
+    let collected = [];
+    const res = await collectSelectedTabUrls();
+
+    if (res && res.success && res.links && res.links.length > 0) {
+      collected = res.links;
+    }
+
+    if (!collected || collected.length === 0) {
+      setStatus("No selected tabs found.", true);
+      return;
+    }
+
+    const text = collected.join("\n");
+    setStatus(`Found ${collected.length} selected tab(s). Copying...`);
+
+    const copyResult = await tryCopyText(text, collected.length);
+    if (copyResult.ok) {
+      setStatus(`Copied ${collected.length} selected tab URL(s) to clipboard.`);
+      fallback.style.display = "none";
+      return;
+    }
+
+    fallbackText.value = text;
+    fallback.style.display = "block";
+    setStatus(
+      `Could not copy automatically (${
+        copyResult.reason || ""
+      }). Please copy manually below.`,
+      true
+    );
+  }
+
   // Handler for copying Qiita/Zenn links from current page
   async function handleCopyLinks(domain) {
     setStatus("Collecting " + domain + " links...");
@@ -180,6 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   copyTabsBtn.addEventListener("click", handleCopyTabs);
+  copySelectedTabsBtn.addEventListener("click", handleCopySelectedTabs);
   qiitaBtn.addEventListener("click", () => handleCopyLinks("qiita"));
   zennBtn.addEventListener("click", () => handleCopyLinks("zenn"));
 });
