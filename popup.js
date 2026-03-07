@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyTabsBtn = document.getElementById("copyTabs");
   const copySelectedTabsBtn = document.getElementById("copySelectedTabs");
   const qiitaBtn = document.getElementById("qiita");
-  const zennBtn = document.getElementById("zenn");
   const status = document.getElementById("status");
   const fallback = document.getElementById("fallback");
   const fallbackText = document.getElementById("fallbackText");
@@ -231,5 +230,4 @@ document.addEventListener("DOMContentLoaded", () => {
   copyTabsBtn.addEventListener("click", handleCopyTabs);
   copySelectedTabsBtn.addEventListener("click", handleCopySelectedTabs);
   qiitaBtn.addEventListener("click", () => handleCopyLinks("qiita"));
-  zennBtn.addEventListener("click", () => handleCopyLinks("zenn"));
 });

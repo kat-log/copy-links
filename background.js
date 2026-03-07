@@ -37,12 +37,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                       parsed.hostname === "qiita.com" &&
                       parsed.pathname.match(/^\/[^\/]+\/items\/[a-z0-9]+$/)
                     );
-                  } else if (domain === "zenn") {
-                    // Only include Zenn article links
-                    return (
-                      parsed.hostname === "zenn.dev" &&
-                      parsed.pathname.match(/^\/[^\/]+\/articles\/[a-z0-9-]+$/)
-                    );
                   }
                   return false;
                 } catch (e) {
