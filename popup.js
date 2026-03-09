@@ -1,10 +1,37 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const copyTabsBtn = document.getElementById("copyTabs");
   const copySelectedTabsBtn = document.getElementById("copySelectedTabs");
   const qiitaBtn = document.getElementById("qiita");
   const status = document.getElementById("status");
   const fallback = document.getElementById("fallback");
   const fallbackText = document.getElementById("fallbackText");
+  const settingsBtn = document.getElementById("settingsBtn");
+  const settingsPanel = document.getElementById("settingsPanel");
+  const langSelect = document.getElementById("langSelect");
+
+  let currentLang = await loadLanguage();
+  langSelect.value = currentLang;
+  applyTranslations();
+
+  function applyTranslations() {
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      el.textContent = t(currentLang, el.getAttribute("data-i18n"));
+    });
+    settingsBtn.title = t(currentLang, "settingsTooltip");
+  }
+
+  settingsBtn.addEventListener("click", () => {
+    settingsPanel.style.display =
+      settingsPanel.style.display === "none" ? "block" : "none";
+  });
+
+  langSelect.addEventListener("change", async () => {
+    currentLang = langSelect.value;
+    await saveLanguage(currentLang);
+    applyTranslations();
+    status.textContent = "";
+    fallback.style.display = "none";
+  });
 
   function setStatus(text, isError) {
     status.textContent = text;
@@ -103,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handler for copying all tab URLs
   async function handleCopyTabs() {
-    setStatus("Collecting URLs from all tabs...");
+    setStatus(t(currentLang, "collectingAll"));
     fallback.style.display = "none";
     fallbackText.value = "";
 
@@ -115,16 +142,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!collected || collected.length === 0) {
-      setStatus("No tabs found.", true);
+      setStatus(t(currentLang, "noTabsFound"), true);
       return;
     }
 
     const text = collected.join("\n");
-    setStatus(`Found ${collected.length} tab(s). Copying...`);
+    setStatus(t(currentLang, "foundTabsCopying", { count: collected.length }));
 
     const copyResult = await tryCopyText(text, collected.length);
     if (copyResult.ok) {
-      setStatus(`Copied ${collected.length} tab URL(s) to clipboard.`);
+      setStatus(t(currentLang, "copiedTabs", { count: collected.length }));
       fallback.style.display = "none";
       return;
     }
@@ -133,16 +160,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fallbackText.value = text;
     fallback.style.display = "block";
     setStatus(
-      `Could not copy automatically (${
-        copyResult.reason || ""
-      }). Please copy manually below.`,
+      t(currentLang, "copyFailed", { reason: copyResult.reason || "" }),
       true
     );
   }
 
   // Handler for copying selected (highlighted) tab URLs
   async function handleCopySelectedTabs() {
-    setStatus("Collecting URLs from selected tabs...");
+    setStatus(t(currentLang, "collectingSelected"));
     fallback.style.display = "none";
     fallbackText.value = "";
 
@@ -154,16 +179,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!collected || collected.length === 0) {
-      setStatus("No selected tabs found.", true);
+      setStatus(t(currentLang, "noSelectedTabs"), true);
       return;
     }
 
     const text = collected.join("\n");
-    setStatus(`Found ${collected.length} selected tab(s). Copying...`);
+    setStatus(
+      t(currentLang, "foundSelectedCopying", { count: collected.length })
+    );
 
     const copyResult = await tryCopyText(text, collected.length);
     if (copyResult.ok) {
-      setStatus(`Copied ${collected.length} selected tab URL(s) to clipboard.`);
+      setStatus(
+        t(currentLang, "copiedSelected", { count: collected.length })
+      );
       fallback.style.display = "none";
       return;
     }
@@ -171,16 +200,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fallbackText.value = text;
     fallback.style.display = "block";
     setStatus(
-      `Could not copy automatically (${
-        copyResult.reason || ""
-      }). Please copy manually below.`,
+      t(currentLang, "copyFailed", { reason: copyResult.reason || "" }),
       true
     );
   }
 
   // Handler for copying Qiita/Zenn links from current page
   async function handleCopyLinks(domain) {
-    setStatus("Collecting " + domain + " links...");
+    setStatus(t(currentLang, "collectingDomain", { domain }));
     fallback.style.display = "none";
     fallbackText.value = "";
 
@@ -189,19 +216,22 @@ document.addEventListener("DOMContentLoaded", () => {
       { type: "collectLinks", domain },
       async (response) => {
         if (!response) {
-          setStatus("No response from background", true);
+          setStatus(t(currentLang, "noResponse"), true);
           return;
         }
         if (!response.success) {
-          setStatus("Error: " + (response.error || "unknown"), true);
+          setStatus(
+            t(currentLang, "errorPrefix", {
+              error: response.error || "unknown",
+            }),
+            true
+          );
           return;
         }
 
         const links = response.links || [];
         if (links.length === 0) {
-          setStatus(
-            "No " + domain + " links found inside table elements on this page."
-          );
+          setStatus(t(currentLang, "noLinksFound", { domain }));
           return;
         }
 
@@ -209,7 +239,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const copyResult = await tryCopyText(text, links.length);
 
         if (copyResult.ok) {
-          setStatus(`Copied ${links.length} ${domain} link(s) to clipboard.`);
+          setStatus(
+            t(currentLang, "copiedLinks", { count: links.length, domain })
+          );
           fallback.style.display = "none";
           return;
         }
@@ -218,9 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fallbackText.value = text;
         fallback.style.display = "block";
         setStatus(
-          `Could not copy automatically (${
-            copyResult.reason || ""
-          }). Please copy manually below.`,
+          t(currentLang, "copyFailed", { reason: copyResult.reason || "" }),
           true
         );
       }
