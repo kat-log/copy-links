@@ -21,8 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   settingsBtn.addEventListener("click", () => {
-    settingsPanel.style.display =
-      settingsPanel.style.display === "none" ? "block" : "none";
+    settingsPanel.classList.toggle("open");
   });
 
   langSelect.addEventListener("change", async () => {
@@ -30,12 +29,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     await saveLanguage(currentLang);
     applyTranslations();
     status.textContent = "";
-    fallback.style.display = "none";
+    status.classList.remove("success", "error");
+    fallback.classList.remove("visible");
   });
 
-  function setStatus(text, isError) {
+  function setStatus(text, type) {
     status.textContent = text;
-    status.style.color = isError ? "red" : "#333";
+    status.classList.remove("success", "error");
+    if (type === "error") status.classList.add("error");
+    else if (type === "success") status.classList.add("success");
+  }
+
+  function flashCopySuccess(buttonEl) {
+    buttonEl.classList.add("copy-success");
+    setTimeout(() => buttonEl.classList.remove("copy-success"), 1500);
   }
 
   // Collect URLs from all open tabs in the current window
@@ -131,7 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Handler for copying all tab URLs
   async function handleCopyTabs() {
     setStatus(t(currentLang, "collectingAll"));
-    fallback.style.display = "none";
+    fallback.classList.remove("visible");
     fallbackText.value = "";
 
     let collected = [];
@@ -142,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (!collected || collected.length === 0) {
-      setStatus(t(currentLang, "noTabsFound"), true);
+      setStatus(t(currentLang, "noTabsFound"), "error");
       return;
     }
 
@@ -151,24 +158,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const copyResult = await tryCopyText(text, collected.length);
     if (copyResult.ok) {
-      setStatus(t(currentLang, "copiedTabs", { count: collected.length }));
-      fallback.style.display = "none";
+      setStatus(t(currentLang, "copiedTabs", { count: collected.length }), "success");
+      flashCopySuccess(copyTabsBtn);
+      fallback.classList.remove("visible");
       return;
     }
 
     // If copy to clipboard failed, show fallback textarea with content
     fallbackText.value = text;
-    fallback.style.display = "block";
+    fallback.classList.add("visible");
     setStatus(
       t(currentLang, "copyFailed", { reason: copyResult.reason || "" }),
-      true
+      "error"
     );
   }
 
   // Handler for copying selected (highlighted) tab URLs
   async function handleCopySelectedTabs() {
     setStatus(t(currentLang, "collectingSelected"));
-    fallback.style.display = "none";
+    fallback.classList.remove("visible");
     fallbackText.value = "";
 
     let collected = [];
@@ -179,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (!collected || collected.length === 0) {
-      setStatus(t(currentLang, "noSelectedTabs"), true);
+      setStatus(t(currentLang, "noSelectedTabs"), "error");
       return;
     }
 
@@ -191,24 +199,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     const copyResult = await tryCopyText(text, collected.length);
     if (copyResult.ok) {
       setStatus(
-        t(currentLang, "copiedSelected", { count: collected.length })
+        t(currentLang, "copiedSelected", { count: collected.length }),
+        "success"
       );
-      fallback.style.display = "none";
+      flashCopySuccess(copySelectedTabsBtn);
+      fallback.classList.remove("visible");
       return;
     }
 
     fallbackText.value = text;
-    fallback.style.display = "block";
+    fallback.classList.add("visible");
     setStatus(
       t(currentLang, "copyFailed", { reason: copyResult.reason || "" }),
-      true
+      "error"
     );
   }
 
   // Handler for copying Qiita/Zenn links from current page
   async function handleCopyLinks(domain) {
     setStatus(t(currentLang, "collectingDomain", { domain }));
-    fallback.style.display = "none";
+    fallback.classList.remove("visible");
     fallbackText.value = "";
 
     // Ask background to collect links from the active tab
@@ -216,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       { type: "collectLinks", domain },
       async (response) => {
         if (!response) {
-          setStatus(t(currentLang, "noResponse"), true);
+          setStatus(t(currentLang, "noResponse"), "error");
           return;
         }
         if (!response.success) {
@@ -224,7 +234,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             t(currentLang, "errorPrefix", {
               error: response.error || "unknown",
             }),
-            true
+            "error"
           );
           return;
         }
@@ -240,18 +250,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (copyResult.ok) {
           setStatus(
-            t(currentLang, "copiedLinks", { count: links.length, domain })
+            t(currentLang, "copiedLinks", { count: links.length, domain }),
+            "success"
           );
-          fallback.style.display = "none";
+          flashCopySuccess(qiitaBtn);
+          fallback.classList.remove("visible");
           return;
         }
 
         // If copy to clipboard failed, show fallback textarea with content
         fallbackText.value = text;
-        fallback.style.display = "block";
+        fallback.classList.add("visible");
         setStatus(
           t(currentLang, "copyFailed", { reason: copyResult.reason || "" }),
-          true
+          "error"
         );
       }
     );
