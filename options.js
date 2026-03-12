@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const addForm = document.getElementById("addForm");
   const formError = document.getElementById("formError");
   const inputName = document.getElementById("inputName");
+  const inputNameEn = document.getElementById("inputNameEn");
   const inputHostname = document.getElementById("inputHostname");
   const inputRegex = document.getElementById("inputRegex");
   const exportImportArea = document.getElementById("exportImportArea");
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function clearForm() {
     inputName.value = "";
+    inputNameEn.value = "";
     inputHostname.value = "";
     inputRegex.value = "";
     formError.textContent = "";
@@ -68,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       row.innerHTML =
         '<div class="button-info">' +
         "<strong>" +
-        escapeHtml(config.name) +
+        escapeHtml(getButtonDisplayName(config, currentLang)) +
         "</strong>" +
         '<span class="button-detail">' +
         escapeHtml(config.hostname) +
@@ -115,10 +117,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Save new button
   document.getElementById("saveButton").addEventListener("click", async () => {
     const name = inputName.value.trim();
+    const nameEn = inputNameEn.value.trim();
     const hostname = inputHostname.value.trim();
     const pathnameRegex = inputRegex.value.trim();
 
     const config = { id: generateButtonId(), name, hostname, pathnameRegex };
+    if (nameEn) config.nameEn = nameEn;
     const validation = validateButtonConfig(config);
 
     if (!validation.valid) {

@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentLang = langSelect.value;
     await saveLanguage(currentLang);
     applyTranslations();
+    renderCustomButtons();
     status.textContent = "";
     status.classList.remove("success", "error");
     fallback.classList.remove("visible");
@@ -226,7 +227,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Handler for copying links using a custom button config
   async function handleCopyCustomLinks(config, buttonEl) {
-    setStatus(t(currentLang, "collectingCustom", { name: config.name }));
+    const displayName = getButtonDisplayName(config, currentLang);
+    setStatus(t(currentLang, "collectingCustom", { name: displayName }));
     fallback.classList.remove("visible");
     fallbackText.value = "";
 
@@ -254,7 +256,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const links = response.links || [];
         if (links.length === 0) {
           setStatus(
-            t(currentLang, "noCustomLinksFound", { name: config.name })
+            t(currentLang, "noCustomLinksFound", { name: displayName })
           );
           return;
         }
@@ -266,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           setStatus(
             t(currentLang, "copiedCustomLinks", {
               count: links.length,
-              name: config.name,
+              name: displayName,
             }),
             "success"
           );
@@ -300,7 +302,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         '<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>' +
         "</svg>" +
         "<span>" +
-        escapeHtml(config.name) +
+        escapeHtml(getButtonDisplayName(config, currentLang)) +
         "</span>";
       btn.addEventListener("click", () =>
         handleCopyCustomLinks(config, btn)

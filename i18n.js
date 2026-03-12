@@ -56,6 +56,7 @@ const translations = {
     invalidRegex: "Invalid regular expression.",
     saved: "Saved.",
     resetDone: "Reset to defaults.",
+    buttonNameEnLabel: "Display name (English)",
   },
   ja: {
     heading: "リンクをコピー",
@@ -115,6 +116,7 @@ const translations = {
     invalidRegex: "無効な正規表現です。",
     saved: "保存しました。",
     resetDone: "デフォルトに戻しました。",
+    buttonNameEnLabel: "表示名（英語）",
   },
 };
 
