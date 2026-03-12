@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const copyTabsBtn = document.getElementById("copyTabs");
   const copySelectedTabsBtn = document.getElementById("copySelectedTabs");
-  const qiitaBtn = document.getElementById("qiita");
+  const customButtonsContainer = document.getElementById(
+    "customButtonsContainer"
+  );
   const status = document.getElementById("status");
   const fallback = document.getElementById("fallback");
   const fallbackText = document.getElementById("fallbackText");
@@ -32,6 +34,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     status.classList.remove("success", "error");
     fallback.classList.remove("visible");
   });
+
+  document
+    .getElementById("manageCustomButtons")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      chrome.runtime.openOptionsPage();
+    });
 
   function setStatus(text, type) {
     status.textContent = text;
@@ -215,15 +224,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  // Handler for copying Qiita/Zenn links from current page
-  async function handleCopyLinks(domain) {
-    setStatus(t(currentLang, "collectingDomain", { domain }));
+  // Handler for copying links using a custom button config
+  async function handleCopyCustomLinks(config, buttonEl) {
+    setStatus(t(currentLang, "collectingCustom", { name: config.name }));
     fallback.classList.remove("visible");
     fallbackText.value = "";
 
-    // Ask background to collect links from the active tab
     chrome.runtime.sendMessage(
-      { type: "collectLinks", domain },
+      {
+        type: "collectLinks",
+        hostname: config.hostname,
+        pathnameRegex: config.pathnameRegex,
+      },
       async (response) => {
         if (!response) {
           setStatus(t(currentLang, "noResponse"), "error");
@@ -241,7 +253,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const links = response.links || [];
         if (links.length === 0) {
-          setStatus(t(currentLang, "noLinksFound", { domain }));
+          setStatus(
+            t(currentLang, "noCustomLinksFound", { name: config.name })
+          );
           return;
         }
 
@@ -250,10 +264,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (copyResult.ok) {
           setStatus(
-            t(currentLang, "copiedLinks", { count: links.length, domain }),
+            t(currentLang, "copiedCustomLinks", {
+              count: links.length,
+              name: config.name,
+            }),
             "success"
           );
-          flashCopySuccess(qiitaBtn);
+          flashCopySuccess(buttonEl);
           fallback.classList.remove("visible");
           return;
         }
@@ -269,7 +286,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
+  // Render custom buttons from storage
+  async function renderCustomButtons() {
+    customButtonsContainer.innerHTML = "";
+    const buttons = await loadCustomButtons();
+
+    buttons.forEach((config) => {
+      const btn = document.createElement("button");
+      btn.className = "action-btn";
+      btn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>' +
+        '<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>' +
+        "</svg>" +
+        "<span>" +
+        escapeHtml(config.name) +
+        "</span>";
+      btn.addEventListener("click", () =>
+        handleCopyCustomLinks(config, btn)
+      );
+      customButtonsContainer.appendChild(btn);
+    });
+  }
+
+  // Refresh custom buttons when storage changes (e.g. from options page)
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "local" && changes.customButtons) {
+      renderCustomButtons();
+    }
+  });
+
   copyTabsBtn.addEventListener("click", handleCopyTabs);
   copySelectedTabsBtn.addEventListener("click", handleCopySelectedTabs);
-  qiitaBtn.addEventListener("click", () => handleCopyLinks("qiita"));
+  renderCustomButtons();
 });

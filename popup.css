@@ -93,7 +93,7 @@ body {
 }
 
 .settings-panel.open {
-  max-height: 100px;
+  max-height: 160px;
   opacity: 1;
   margin-bottom: var(--space-3);
 }
@@ -136,6 +136,25 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+.button-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-1) 0;
+}
+
+.manage-link {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-helper);
+  color: var(--color-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.manage-link:hover {
+  text-decoration: underline;
 }
 
 .action-btn {

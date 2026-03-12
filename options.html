@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="optionsTitle">カスタムボタンの設定</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 data-i18n="optionsTitle">カスタムボタンの設定</h1>
+
+      <!-- Custom buttons list -->
+      <section class="section">
+        <h2 data-i18n="customButtonsHeading">カスタムボタン</h2>
+        <div id="buttonList"></div>
+        <button id="addButton" class="btn btn-primary" data-i18n="addButton">
+          ボタンを追加
+        </button>
+      </section>
+
+      <!-- Add form -->
+      <section id="addForm" class="section add-form" style="display: none">
+        <h3 data-i18n="addNewButton">新しいボタンを追加</h3>
+        <div class="form-group">
+          <label data-i18n="buttonNameLabel">表示名</label>
+          <input type="text" id="inputName" data-placeholder-i18n="buttonNameLabel" placeholder="例: Qiitaリンクをコピー" />
+        </div>
+        <div class="form-group">
+          <label data-i18n="hostnameLabel">ホスト名</label>
+          <input type="text" id="inputHostname" placeholder="例: qiita.com" />
+        </div>
+        <div class="form-group">
+          <label data-i18n="pathnameRegexLabel">パス名の正規表現</label>
+          <input type="text" id="inputRegex" class="mono" placeholder='例: ^\/[^\/]+\/items\/[a-z0-9]+$' />
+          <small data-i18n="regexHelp" class="help-text">URLのパス部分にマッチする正規表現を入力してください</small>
+        </div>
+        <div class="form-actions">
+          <button id="saveButton" class="btn btn-primary" data-i18n="save">保存</button>
+          <button id="cancelButton" class="btn btn-secondary" data-i18n="cancel">キャンセル</button>
+        </div>
+        <div id="formError" class="error-text"></div>
+      </section>
+
+      <!-- Actions -->
+      <section class="section">
+        <h2 data-i18n="actionsHeading">操作</h2>
+        <button id="resetDefaults" class="btn btn-secondary" data-i18n="resetDefaults">
+          デフォルトに戻す
+        </button>
+      </section>
+
+      <!-- Export / Import -->
+      <section class="section">
+        <h2 data-i18n="exportImportHeading">エクスポート / インポート</h2>
+        <textarea id="exportImportArea" rows="8" placeholder="JSON"></textarea>
+        <div class="form-actions">
+          <button id="exportBtn" class="btn btn-secondary" data-i18n="exportBtn">エクスポート</button>
+          <button id="importBtn" class="btn btn-secondary" data-i18n="importBtn">インポート</button>
+        </div>
+        <div id="exportImportStatus"></div>
+      </section>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="i18n.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 // Service worker for handling link collection
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "collectLinks") {
-    const { domain } = request;
+    const { hostname, pathnameRegex } = request;
 
     // Run content script to collect links
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.scripting.executeScript(
         {
           target: { tabId: tab.id },
-          func: (domain) => {
+          func: (hostname, pathnameRegex) => {
             // Helper to normalize URLs
             function normalizeUrl(url, base) {
               try {
@@ -24,21 +24,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               }
             }
 
-            // Get all links from the page that match the domain
+            // Get all links from the page that match the hostname and pathname pattern
+            const regex = pathnameRegex ? new RegExp(pathnameRegex) : null;
             const links = Array.from(document.querySelectorAll("a"))
               .map((a) => normalizeUrl(a.href, window.location.href))
               .filter((url) => {
                 if (!url) return false;
                 try {
                   const parsed = new URL(url);
-                  if (domain === "qiita") {
-                    // Only include Qiita article links
-                    return (
-                      parsed.hostname === "qiita.com" &&
-                      parsed.pathname.match(/^\/[^\/]+\/items\/[a-z0-9]+$/)
-                    );
-                  }
-                  return false;
+                  if (parsed.hostname !== hostname) return false;
+                  return regex ? regex.test(parsed.pathname) : true;
                 } catch (e) {
                   return false;
                 }
@@ -49,7 +44,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               links: [...new Set(links)], // Remove duplicates
             };
           },
-          args: [domain],
+          args: [hostname, pathnameRegex],
         },
         (results) => {
           if (chrome.runtime.lastError) {
