@@ -1,0 +1,225 @@
+{
+  "appName": {
+    "message": "全タブURLコピー",
+    "description": "Extension name shown in Chrome Web Store and extensions page"
+  },
+  "appDescription": {
+    "message": "ツールバーのアイコンをクリックして、開いているすべてのタブのURLをクリップボードにコピーします（1行に1つ）。",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "リンクをコピー",
+    "description": "Tooltip for the browser action icon"
+  },
+  "heading": {
+    "message": "リンクをコピー"
+  },
+  "copyAllTabs": {
+    "message": "全タブのURLをコピー"
+  },
+  "copySelectedTabs": {
+    "message": "選択中のタブのURLをコピー"
+  },
+  "copyQiita": {
+    "message": "Qiitaリンクをコピー"
+  },
+  "fallbackInstruction": {
+    "message": "以下のリンクを手動でコピーしてください："
+  },
+  "settingsTooltip": {
+    "message": "設定"
+  },
+  "languageLabel": {
+    "message": "言語"
+  },
+  "manageCustomButtons": {
+    "message": "カスタムボタンの管理"
+  },
+  "collectingAll": {
+    "message": "全タブのURLを取得中..."
+  },
+  "noTabsFound": {
+    "message": "タブが見つかりません。"
+  },
+  "foundTabsCopying": {
+    "message": "$count$件のタブを検出。コピー中...",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "copiedTabs": {
+    "message": "$count$件のタブURLをクリップボードにコピーしました。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "copyFailed": {
+    "message": "自動コピーに失敗しました（$reason$）。以下から手動でコピーしてください。",
+    "placeholders": {
+      "reason": {
+        "content": "$1"
+      }
+    }
+  },
+  "collectingSelected": {
+    "message": "選択中のタブのURLを取得中..."
+  },
+  "noSelectedTabs": {
+    "message": "選択されたタブが見つかりません。"
+  },
+  "foundSelectedCopying": {
+    "message": "$count$件の選択タブを検出。コピー中...",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "copiedSelected": {
+    "message": "$count$件の選択タブURLをクリップボードにコピーしました。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "collectingCustom": {
+    "message": "$name$ のリンクを取得中...",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "copiedCustomLinks": {
+    "message": "$name$ のリンクを$count$件コピーしました。",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      },
+      "count": {
+        "content": "$2"
+      }
+    }
+  },
+  "noCustomLinksFound": {
+    "message": "$name$ のリンクが見つかりませんでした。",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "noResponse": {
+    "message": "バックグラウンドから応答がありません"
+  },
+  "errorPrefix": {
+    "message": "エラー: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "カスタムボタンの設定"
+  },
+  "customButtonsHeading": {
+    "message": "カスタムボタン"
+  },
+  "addButton": {
+    "message": "ボタンを追加"
+  },
+  "addNewButton": {
+    "message": "新しいボタンを追加"
+  },
+  "buttonNameLabel": {
+    "message": "表示名"
+  },
+  "buttonNameEnLabel": {
+    "message": "表示名（英語）"
+  },
+  "hostnameLabel": {
+    "message": "ホスト名"
+  },
+  "pathnameRegexLabel": {
+    "message": "パス名の正規表現（オプション）"
+  },
+  "regexHelp": {
+    "message": "URLのパス部分にマッチする正規表現を入力してください。空の場合はすべてのパスにマッチします。"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "cancel": {
+    "message": "キャンセル"
+  },
+  "noCustomButtons": {
+    "message": "カスタムボタンが設定されていません。"
+  },
+  "actionsHeading": {
+    "message": "操作"
+  },
+  "confirmReset": {
+    "message": "すべてのカスタムボタンをデフォルトに戻しますか？この操作は元に戻せません。"
+  },
+  "resetDefaults": {
+    "message": "デフォルトに戻す"
+  },
+  "exportImportHeading": {
+    "message": "エクスポート / インポート"
+  },
+  "exportBtn": {
+    "message": "エクスポート"
+  },
+  "importBtn": {
+    "message": "インポート"
+  },
+  "exportedToClipboard": {
+    "message": "設定をエクスポートし、クリップボードにコピーしました。"
+  },
+  "exportedToTextarea": {
+    "message": "設定を上のテキストエリアにエクスポートしました。"
+  },
+  "importEmpty": {
+    "message": "上のテキストエリアにJSON設定を貼り付けてください。"
+  },
+  "importSuccess": {
+    "message": "$count$件のボタンをインポートしました。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importError": {
+    "message": "インポートに失敗しました: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "nameRequired": {
+    "message": "表示名は必須です。"
+  },
+  "hostnameRequired": {
+    "message": "ホスト名は必須です。"
+  },
+  "regexRequired": {
+    "message": "パス名の正規表現は必須です。"
+  },
+  "invalidRegex": {
+    "message": "無効な正規表現です。"
+  },
+  "saved": {
+    "message": "保存しました。"
+  },
+  "resetDone": {
+    "message": "デフォルトに戻しました。"
+  }
+}
