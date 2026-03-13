@@ -3,16 +3,33 @@ const DEFAULT_CUSTOM_BUTTONS = [
   {
     id: "qiita-articles",
     name: "Qiitaリンクをコピー",
+    nameEn: "Copy Qiita links",
     hostname: "qiita.com",
     pathnameRegex: "^\\/[^\\/]+\\/items\\/[a-z0-9]+$",
   },
 ];
 
+// Get the display name for a button based on the current language
+function getButtonDisplayName(config, lang) {
+  if (lang === "en" && config.nameEn) {
+    return config.nameEn;
+  }
+  return config.name;
+}
+
 // Load custom buttons from storage. Returns default if none saved.
+// Merges nameEn from defaults for buttons that match by ID (migration support).
 async function loadCustomButtons() {
   return new Promise((resolve) => {
     chrome.storage.local.get("customButtons", (result) => {
-      resolve(result.customButtons || DEFAULT_CUSTOM_BUTTONS);
+      const buttons = result.customButtons || DEFAULT_CUSTOM_BUTTONS;
+      for (const btn of buttons) {
+        const def = DEFAULT_CUSTOM_BUTTONS.find((d) => d.id === btn.id);
+        if (def && def.nameEn && !btn.nameEn) {
+          btn.nameEn = def.nameEn;
+        }
+      }
+      resolve(buttons);
     });
   });
 }
