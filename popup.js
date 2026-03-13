@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  await initI18n();
   const copyTabsBtn = document.getElementById("copyTabs");
   const copySelectedTabsBtn = document.getElementById("copySelectedTabs");
   const customButtonsContainer = document.getElementById(

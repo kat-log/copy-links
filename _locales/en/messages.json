@@ -1,0 +1,288 @@
+{
+  "appName": {
+    "message": "Copy All Tab URLs",
+    "description": "Extension name shown in Chrome Web Store and extensions page"
+  },
+  "appDescription": {
+    "message": "Click the toolbar icon to copy URLs of all open tabs to the clipboard (one per line).",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "Copy links",
+    "description": "Tooltip for the browser action icon"
+  },
+  "heading": {
+    "message": "Copy links",
+    "description": "Popup heading"
+  },
+  "copyAllTabs": {
+    "message": "Copy all tab URLs",
+    "description": "Button label to copy all tab URLs"
+  },
+  "copySelectedTabs": {
+    "message": "Copy selected tab URLs",
+    "description": "Button label to copy selected tab URLs"
+  },
+  "copyQiita": {
+    "message": "Copy Qiita links",
+    "description": "Default custom button name for Qiita"
+  },
+  "fallbackInstruction": {
+    "message": "Copy the links below manually:",
+    "description": "Instruction shown when clipboard copy fails"
+  },
+  "settingsTooltip": {
+    "message": "Settings",
+    "description": "Tooltip for the settings gear icon"
+  },
+  "languageLabel": {
+    "message": "Language",
+    "description": "Label for the language selector"
+  },
+  "manageCustomButtons": {
+    "message": "Manage custom buttons",
+    "description": "Link to open options page"
+  },
+  "collectingAll": {
+    "message": "Collecting URLs from all tabs...",
+    "description": "Status while collecting all tab URLs"
+  },
+  "noTabsFound": {
+    "message": "No tabs found.",
+    "description": "Error when no tabs are found"
+  },
+  "foundTabsCopying": {
+    "message": "Found $count$ tab(s). Copying...",
+    "description": "Status showing tab count before copying",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "copiedTabs": {
+    "message": "Copied $count$ tab URL(s) to clipboard.",
+    "description": "Success message after copying all tabs",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "copyFailed": {
+    "message": "Could not copy automatically ($reason$). Please copy manually below.",
+    "description": "Error message when clipboard copy fails",
+    "placeholders": {
+      "reason": {
+        "content": "$1",
+        "example": "clipboard API not available"
+      }
+    }
+  },
+  "collectingSelected": {
+    "message": "Collecting URLs from selected tabs...",
+    "description": "Status while collecting selected tab URLs"
+  },
+  "noSelectedTabs": {
+    "message": "No selected tabs found.",
+    "description": "Error when no selected tabs found"
+  },
+  "foundSelectedCopying": {
+    "message": "Found $count$ selected tab(s). Copying...",
+    "description": "Status showing selected tab count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "copiedSelected": {
+    "message": "Copied $count$ selected tab URL(s) to clipboard.",
+    "description": "Success after copying selected tabs",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "collectingCustom": {
+    "message": "Collecting links for $name$...",
+    "description": "Status while collecting custom links",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Qiita"
+      }
+    }
+  },
+  "copiedCustomLinks": {
+    "message": "Copied $count$ link(s) for $name$.",
+    "description": "Success after copying custom links",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Qiita"
+      },
+      "count": {
+        "content": "$2",
+        "example": "10"
+      }
+    }
+  },
+  "noCustomLinksFound": {
+    "message": "No matching links found for $name$.",
+    "description": "No links matched the custom filter",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Qiita"
+      }
+    }
+  },
+  "noResponse": {
+    "message": "No response from background",
+    "description": "Error when background script doesn't respond"
+  },
+  "errorPrefix": {
+    "message": "Error: $error$",
+    "description": "Generic error prefix",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "unknown error"
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "Custom Button Settings",
+    "description": "Title for the options page"
+  },
+  "customButtonsHeading": {
+    "message": "Custom Buttons",
+    "description": "Heading for the custom buttons section"
+  },
+  "addButton": {
+    "message": "Add button",
+    "description": "Button to add a new custom button"
+  },
+  "addNewButton": {
+    "message": "Add new button",
+    "description": "Heading for the add button form"
+  },
+  "buttonNameLabel": {
+    "message": "Display name",
+    "description": "Label for button display name input"
+  },
+  "buttonNameEnLabel": {
+    "message": "Display name (English)",
+    "description": "Label for English display name input"
+  },
+  "hostnameLabel": {
+    "message": "Hostname",
+    "description": "Label for hostname input"
+  },
+  "pathnameRegexLabel": {
+    "message": "Pathname regex (optional)",
+    "description": "Label for pathname regex input"
+  },
+  "regexHelp": {
+    "message": "Enter a regular expression to match the URL path portion. If empty, all paths will match.",
+    "description": "Help text for regex input"
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "Cancel",
+    "description": "Cancel button text"
+  },
+  "noCustomButtons": {
+    "message": "No custom buttons configured.",
+    "description": "Empty state message"
+  },
+  "actionsHeading": {
+    "message": "Actions",
+    "description": "Heading for actions section"
+  },
+  "confirmReset": {
+    "message": "Reset all custom buttons to defaults? This cannot be undone.",
+    "description": "Confirmation dialog for reset"
+  },
+  "resetDefaults": {
+    "message": "Reset to defaults",
+    "description": "Button to reset to default configuration"
+  },
+  "exportImportHeading": {
+    "message": "Export / Import",
+    "description": "Heading for export/import section"
+  },
+  "exportBtn": {
+    "message": "Export",
+    "description": "Export button text"
+  },
+  "importBtn": {
+    "message": "Import",
+    "description": "Import button text"
+  },
+  "exportedToClipboard": {
+    "message": "Exported and copied to clipboard.",
+    "description": "Success message for export"
+  },
+  "exportedToTextarea": {
+    "message": "Exported to the textarea above.",
+    "description": "Fallback export message"
+  },
+  "importEmpty": {
+    "message": "Please paste a JSON configuration in the textarea above.",
+    "description": "Error when import textarea is empty"
+  },
+  "importSuccess": {
+    "message": "Imported $count$ button(s) successfully.",
+    "description": "Success message after import",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "importError": {
+    "message": "Import failed: $error$",
+    "description": "Error message when import fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Invalid JSON"
+      }
+    }
+  },
+  "nameRequired": {
+    "message": "Display name is required.",
+    "description": "Validation error for missing name"
+  },
+  "hostnameRequired": {
+    "message": "Hostname is required.",
+    "description": "Validation error for missing hostname"
+  },
+  "regexRequired": {
+    "message": "Pathname regex is required.",
+    "description": "Validation error for missing regex"
+  },
+  "invalidRegex": {
+    "message": "Invalid regular expression.",
+    "description": "Validation error for invalid regex"
+  },
+  "saved": {
+    "message": "Saved.",
+    "description": "Success message after saving"
+  },
+  "resetDone": {
+    "message": "Reset to defaults.",
+    "description": "Success message after reset"
+  }
+}

@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  await initI18n();
   let currentLang = await loadLanguage();
   applyTranslations();
 
