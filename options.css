@@ -121,14 +121,26 @@ h3 {
   flex-shrink: 0;
 }
 
-.btn-icon:hover {
+.btn-delete:hover {
   color: var(--color-error);
   background-color: #fef2f2;
+}
+
+.btn-edit:hover {
+  color: var(--color-accent);
+  background-color: #eff6ff;
 }
 
 .btn-icon svg {
   width: 18px;
   height: 18px;
+}
+
+.button-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
 }
 
 .empty-message {
