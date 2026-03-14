@@ -69,6 +69,24 @@ function validateButtonConfig(config) {
   return { valid: true };
 }
 
+// Normalize hostname input: strip protocol, path, trailing slashes, etc.
+// e.g. "https://ja.wikipedia.org/wiki/foo" → "ja.wikipedia.org"
+function normalizeHostname(input) {
+  const s = input.trim();
+  if (!s) return s;
+  // Try parsing as-is (handles "https://example.com/..." )
+  // or with https:// prepended (handles "example.com/path")
+  const candidates = s.includes("://") ? [s] : ["https://" + s];
+  for (const candidate of candidates) {
+    try {
+      return new URL(candidate).hostname;
+    } catch (e) {
+      // fall through
+    }
+  }
+  return s.replace(/\/+$/, "");
+}
+
 // Escape HTML to prevent XSS when inserting user-defined strings
 function escapeHtml(str) {
   const div = document.createElement("div");

@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("saveButton").addEventListener("click", async () => {
     const name = inputName.value.trim();
     const nameEn = inputNameEn.value.trim();
-    const hostname = inputHostname.value.trim();
+    const hostname = normalizeHostname(inputHostname.value);
     const pathnameRegex = inputRegex.value.trim();
 
     const buttons = await loadCustomButtons();
@@ -226,6 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!Array.isArray(parsed)) throw new Error("Not an array");
 
       for (const btn of parsed) {
+        if (btn.hostname) btn.hostname = normalizeHostname(btn.hostname);
         const v = validateButtonConfig(btn);
         if (!v.valid) {
           throw new Error(
