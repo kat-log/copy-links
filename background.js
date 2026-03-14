@@ -33,7 +33,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 try {
                   const parsed = new URL(url);
                   if (parsed.hostname !== hostname) return false;
-                  return regex ? regex.test(parsed.pathname) : true;
+                  if (!regex) return true;
+                  if (regex.test(parsed.pathname)) return true;
+                  try {
+                    return regex.test(decodeURIComponent(parsed.pathname));
+                  } catch (e) {
+                    return false;
+                  }
                 } catch (e) {
                   return false;
                 }
