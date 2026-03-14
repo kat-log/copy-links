@@ -173,6 +173,10 @@
     "message": "Add new button",
     "description": "Heading for the add button form"
   },
+  "editButton": {
+    "message": "Edit button",
+    "description": "Heading for the edit button form"
+  },
   "buttonNameLabel": {
     "message": "Display name",
     "description": "Label for button display name input"

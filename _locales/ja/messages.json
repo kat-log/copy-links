@@ -137,6 +137,9 @@
   "addNewButton": {
     "message": "新しいボタンを追加"
   },
+  "editButton": {
+    "message": "ボタンを編集"
+  },
   "buttonNameLabel": {
     "message": "表示名"
   },

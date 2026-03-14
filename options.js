@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const inputNameEn = document.getElementById("inputNameEn");
   const inputHostname = document.getElementById("inputHostname");
   const inputRegex = document.getElementById("inputRegex");
+  const formHeading = document.getElementById("formHeading");
   const exportImportArea = document.getElementById("exportImportArea");
   const exportImportStatus = document.getElementById("exportImportStatus");
+  let editingIndex = null;
 
   function setExportImportStatus(text, type) {
     exportImportStatus.textContent = text;
@@ -33,6 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     inputHostname.value = "";
     inputRegex.value = "";
     formError.textContent = "";
+    editingIndex = null;
+    formHeading.setAttribute("data-i18n", "addNewButton");
+    formHeading.textContent = t(currentLang, "addNewButton");
   }
 
   // Check if current buttons match the default configuration
@@ -80,6 +85,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           : "") +
         "</span>" +
         "</div>" +
+        '<div class="button-actions">' +
+        '<button class="btn-icon btn-edit" data-index="' +
+        index +
+        '">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
+        '<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
+        "</svg>" +
+        "</button>" +
         '<button class="btn-icon btn-delete" data-index="' +
         index +
         '">' +
@@ -87,8 +101,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         '<polyline points="3 6 5 6 21 6"></polyline>' +
         '<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>' +
         "</svg>" +
-        "</button>";
+        "</button>" +
+        "</div>";
       buttonList.appendChild(row);
+    });
+
+    // Attach edit handlers
+    buttonList.querySelectorAll(".btn-edit").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const idx = parseInt(btn.dataset.index, 10);
+        const buttons = await loadCustomButtons();
+        const config = buttons[idx];
+
+        inputName.value = config.name;
+        inputNameEn.value = config.nameEn || "";
+        inputHostname.value = config.hostname;
+        inputRegex.value = config.pathnameRegex || "";
+        formError.textContent = "";
+
+        editingIndex = idx;
+        formHeading.setAttribute("data-i18n", "editButton");
+        formHeading.textContent = t(currentLang, "editButton");
+
+        addForm.style.display = "block";
+        inputName.focus();
+      });
     });
 
     // Attach delete handlers
@@ -98,6 +135,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const buttons = await loadCustomButtons();
         buttons.splice(idx, 1);
         await saveCustomButtons(buttons);
+        clearForm();
+        addForm.style.display = "none";
         renderButtonList();
       });
     });
@@ -105,6 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Show add form
   document.getElementById("addButton").addEventListener("click", () => {
+    clearForm();
     addForm.style.display = "block";
     inputName.focus();
   });
@@ -115,26 +155,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     clearForm();
   });
 
-  // Save new button
+  // Save button (handles both add and edit)
   document.getElementById("saveButton").addEventListener("click", async () => {
     const name = inputName.value.trim();
     const nameEn = inputNameEn.value.trim();
     const hostname = inputHostname.value.trim();
     const pathnameRegex = inputRegex.value.trim();
 
-    const config = { id: generateButtonId(), name, hostname, pathnameRegex };
-    if (nameEn) config.nameEn = nameEn;
-    const validation = validateButtonConfig(config);
+    const buttons = await loadCustomButtons();
 
-    if (!validation.valid) {
-      formError.textContent = t(currentLang, validation.error);
-      return;
+    if (editingIndex !== null) {
+      const config = { id: buttons[editingIndex].id, name, hostname, pathnameRegex };
+      if (nameEn) config.nameEn = nameEn;
+      const validation = validateButtonConfig(config);
+      if (!validation.valid) {
+        formError.textContent = t(currentLang, validation.error);
+        return;
+      }
+      buttons[editingIndex] = config;
+    } else {
+      const config = { id: generateButtonId(), name, hostname, pathnameRegex };
+      if (nameEn) config.nameEn = nameEn;
+      const validation = validateButtonConfig(config);
+      if (!validation.valid) {
+        formError.textContent = t(currentLang, validation.error);
+        return;
+      }
+      buttons.push(config);
     }
 
-    const buttons = await loadCustomButtons();
-    buttons.push(config);
     await saveCustomButtons(buttons);
-
     clearForm();
     addForm.style.display = "none";
     renderButtonList();
