@@ -120,7 +120,7 @@
     }
   },
   "copiedCustomLinks": {
-    "message": "Copied $count$ link(s) for $name$.",
+    "message": "Copied $count$ link(s) to clipboard ($name$).",
     "description": "Success after copying custom links",
     "placeholders": {
       "name": {

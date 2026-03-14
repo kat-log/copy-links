@@ -96,7 +96,7 @@
     }
   },
   "copiedCustomLinks": {
-    "message": "$name$ のリンクを$count$件コピーしました。",
+    "message": "$count$件のリンクをクリップボードにコピーしました（$name$）。",
     "placeholders": {
       "name": {
         "content": "$1"
