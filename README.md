@@ -4,7 +4,7 @@ A Chrome extension (Manifest V3) that copies the URLs of your open tabs to the c
 
 [![Watch the promo video](docs/img/promo-thumbnail.jpg)](https://youtu.be/eUM-HaXOtsk)
 
-**Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)
+**Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)　/　**Website:** [kat-log.github.io/copy-links](https://kat-log.github.io/copy-links/)
 
 [日本語はこちら](#日本語)
 
@@ -59,7 +59,7 @@ Duplicate links are removed. If the clipboard cannot be written, the popup shows
 
 開いているタブの URL を、1行に1つずつクリップボードにコピーする Chrome 拡張機能（Manifest V3）です。
 
-**インストール：** [Chrome ウェブストア](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)　／　**紹介動画：** [YouTube](https://youtu.be/eUM-HaXOtsk)
+**インストール：** [Chrome ウェブストア](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)　／　**紹介動画：** [YouTube](https://youtu.be/eUM-HaXOtsk)　／　**紹介ページ：** [kat-log.github.io/copy-links](https://kat-log.github.io/copy-links/)
 
 ### できること
 
