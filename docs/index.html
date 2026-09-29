@@ -118,6 +118,13 @@
     .video-frame button { padding: 0; cursor: pointer; background: #000; }
     .video-frame button img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease, opacity .3s ease; }
     .video-frame button:hover img { transform: scale(1.02); opacity: .92; }
+    .play {
+      position: absolute; right: 5%; bottom: 8%;
+      width: 64px; height: 64px; border-radius: 50%; background: rgba(0, 0, 0, .75);
+      display: grid; place-items: center; transition: background .2s ease;
+    }
+    .video-frame button:hover .play { background: #ff0033; }
+    .play svg { width: 26px; height: 26px; fill: #fff; margin-left: 4px; }
     .video-caption { text-align: center; color: var(--text-2); font-size: 14px; margin-top: 12px; }
 
     /* Sections */
@@ -234,7 +241,7 @@
           <button type="button" data-set-lang="ja" aria-pressed="true">日本語</button>
           <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a class="btn btn-primary btn-sm" href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd">
+        <a class="btn btn-primary btn-sm" href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd" target="_blank" rel="noopener">
           <span lang="ja">インストール</span><span lang="en">Install</span>
         </a>
       </div>
@@ -255,7 +262,7 @@
           <span lang="en">One URL per line, straight to your clipboard. Copy just the tabs you select, or just the links on a page that match a pattern. A small Chrome extension that makes sharing research and saving notes painless.</span>
         </p>
         <div class="cta">
-          <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd">
+          <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             <span lang="ja">Chrome に追加（無料）</span><span lang="en">Add to Chrome — free</span>
           </a>
@@ -277,13 +284,15 @@
       <div class="wrap">
         <div class="video-frame" id="player">
           <button type="button" id="playBtn" aria-label="Play video">
-            <img src="img/promo-thumbnail.jpg" alt="" width="1280" height="720" />
+            <img lang="ja" src="img/promo-thumbnail-ja.jpg" alt="" width="1280" height="720" />
+            <img lang="en" src="img/promo-thumbnail.jpg" alt="" width="1280" height="720" />
+            <span class="play" lang="ja"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
           </button>
         </div>
         <p class="video-caption">
           <span lang="ja">実際の動きは動画がいちばんわかりやすいです。</span>
           <span lang="en">The quickest way to see what it does.</span>
-          <a href="https://youtu.be/eUM-HaXOtsk">YouTube</a>
+          <a lang="ja" href="https://youtu.be/gjAlIcF5pnM" target="_blank" rel="noopener">YouTube</a><a lang="en" href="https://youtu.be/eUM-HaXOtsk" target="_blank" rel="noopener">YouTube</a>
         </p>
       </div>
     </section>
@@ -436,7 +445,7 @@ https://news.ycombinator.com/</div>
           <div><code>tabs</code><span lang="ja">タブのURLを読むため</span><span lang="en">Read the URLs of your tabs</span></div>
           <div><code>activeTab</code><code>scripting</code><span lang="ja">カスタムボタンで表示中ページのリンクを読むため</span><span lang="en">Read links in the current page for custom buttons</span></div>
           <div><code>storage</code><span lang="ja">カスタムボタンと言語設定を保存するため</span><span lang="en">Save custom buttons and the language setting</span></div>
-          <div><span lang="ja">ソースコードは GitHub で公開しています。</span><span lang="en">The source code is public on GitHub.</span> <a href="https://github.com/kat-log/copy-links">kat-log/copy-links</a></div>
+          <div><span lang="ja">ソースコードは GitHub で公開しています。</span><span lang="en">The source code is public on GitHub.</span> <a href="https://github.com/kat-log/copy-links" target="_blank" rel="noopener">kat-log/copy-links</a></div>
         </div>
       </div>
     </section>
@@ -447,7 +456,7 @@ https://news.ycombinator.com/</div>
         <img class="icon" src="img/icon.svg" alt="" width="64" height="64" />
         <h2><span lang="ja">タブのURL集め、もう手作業でやらなくていい。</span><span lang="en">Stop copying URLs one tab at a time.</span></h2>
         <p class="section-lead" style="margin:0 auto 28px"><span lang="ja">無料で、すぐに使えます。</span><span lang="en">Free, and ready in seconds.</span></p>
-        <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd">
+        <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span lang="ja">Chrome ウェブストアで入手</span><span lang="en">Get it on the Chrome Web Store</span>
         </a>
@@ -459,9 +468,9 @@ https://news.ycombinator.com/</div>
     <div class="wrap">
       <span>© kat-log</span>
       <span>
-        <a href="https://github.com/kat-log/copy-links">GitHub</a> ·
-        <a href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd">Chrome Web Store</a> ·
-        <a href="https://youtu.be/eUM-HaXOtsk">YouTube</a>
+        <a href="https://github.com/kat-log/copy-links" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd" target="_blank" rel="noopener">Chrome Web Store</a> ·
+        <a lang="ja" href="https://youtu.be/gjAlIcF5pnM" target="_blank" rel="noopener">YouTube</a><a lang="en" href="https://youtu.be/eUM-HaXOtsk" target="_blank" rel="noopener">YouTube</a>
       </span>
     </div>
   </footer>
@@ -475,8 +484,11 @@ https://news.ycombinator.com/</div>
         en: 'Copy All Tab URLs — Chrome extension'
       };
 
+      var resetPlayer = function () {};
+
       function setLang(lang) {
         root.lang = lang;
+        resetPlayer();
         document.title = titles[lang];
         buttons.forEach(function (b) {
           b.setAttribute('aria-pressed', String(b.dataset.setLang === lang));
@@ -492,15 +504,21 @@ https://news.ycombinator.com/</div>
         b.addEventListener('click', function () { setLang(b.dataset.setLang); });
       });
 
-      // Load the YouTube player only when clicked
-      document.getElementById('playBtn').addEventListener('click', function () {
+      // Load the YouTube player only when clicked (Japanese or English video)
+      var player = document.getElementById('player');
+      var playBtn = document.getElementById('playBtn');
+      var videoIds = { ja: 'gjAlIcF5pnM', en: 'eUM-HaXOtsk' };
+      playBtn.addEventListener('click', function () {
         var iframe = document.createElement('iframe');
-        iframe.src = 'https://www.youtube-nocookie.com/embed/eUM-HaXOtsk?autoplay=1&rel=0';
-        iframe.title = 'Copy All Tab URLs — promo video';
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + videoIds[root.lang] + '?autoplay=1&rel=0';
+        iframe.title = root.lang === 'ja' ? '全タブURLコピー 紹介動画' : 'Copy All Tab URLs — promo video';
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
         iframe.allowFullscreen = true;
-        document.getElementById('player').replaceChildren(iframe);
+        player.replaceChildren(iframe);
       });
+      resetPlayer = function () {
+        if (!player.contains(playBtn)) player.replaceChildren(playBtn);
+      };
     })();
   </script>
 </body>
