@@ -1,81 +1,90 @@
-## Copy Qiita / Zenn のリンクを一括コピーする拡張機能
+# Copy All Tab URLs
 
-この拡張機能は、現在のタブ上に表示されているページから Qiita（qiita.com）や Zenn（zenn.dev）の記事リンクを抽出して、改行区切りでまとめてクリップボードにコピーするシンプルな Chrome 拡張（Manifest V3）です。ポップアップの「Copy links」ボタンを押すだけで動作します。
+A Chrome extension (Manifest V3) that copies the URLs of your open tabs to the clipboard — one per line, ready to paste.
 
-特徴
+[![Watch the promo video](docs/img/promo-thumbnail.jpg)](https://youtu.be/eUM-HaXOtsk)
 
-- Qiita と Zenn の両方に対応。ページのホスト名を判定して、適切なヒューリスティックを使い分けます。
-- 自動コピーに失敗した場合は、ポップアップ内にコピー用のテキストエリアを表示して手動でコピーできます。
-- 動作はすべてユーザーのアクティブなタブ上で完結し、外部送信は行いません。
+**Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)
 
-動作の詳細
+[日本語はこちら](#日本語)
 
-- ホスト判定
+## Features
 
-  - 拡張ポップアップはまずアクティブなタブのホスト名を確認します。
-  - `qiita.com` を含むホストなら Qiita 用のヒューリスティック（表要素中心）、`zenn.dev` なら Zenn 用のヒューリスティック（ページ全体を検索）を優先して実行します。
+- **Copy all tab URLs** — every tab in the current window, in one click.
+- **Copy selected tab URLs** — select tabs with Ctrl / Cmd + click, then copy only those.
+- **Custom buttons** — collect the links inside the current page that match a hostname and an optional pathname regex (e.g. every article on a list page).
+- **Export / Import** — move your custom buttons between browsers as JSON.
+- **English / 日本語** — switch the UI language from the popup's settings.
+- **Local only** — links are collected in your browser; nothing is sent anywhere.
 
-- Qiita のヒューリスティック
+## Usage
 
-  - ページ内の `<table>` 要素を走査し、各アンカーの `href` を確認します。
-  - 絶対 URL で `https://qiita.com`（あるいは指定プレフィックス）を先頭に持ち、`/items/` を含むものを記事リンクとして採用します。
-  - 相対パス（例: `/user/items/xxxxx`）のように先頭が `/` でかつ `/items/` を含む場合は、Qiita のプレフィックスを付けて正規化します。
+1. Click the toolbar icon to open the popup.
+2. Choose **Copy all tab URLs**, **Copy selected tab URLs**, or one of your custom buttons.
+3. Paste anywhere.
 
-- Zenn のヒューリスティック
+To add or edit custom buttons, open the gear icon in the popup → **Manage custom buttons**.
 
-  - ページ内のすべてのアンカーを対象に走査します。
-  - `https://zenn.dev`（あるいは指定プレフィックス）を先頭に持ち、かつ `/articles/` または `/books/` を含む URL を記事リンクとして採用します。
+| Field | Example | Notes |
+| --- | --- | --- |
+| Display name | `Copy post links` | A separate English name can be set. |
+| Hostname | `blog.example.com` | Links must match this hostname exactly. A pasted URL is reduced to its hostname. |
+| Pathname regex (optional) | `^/posts/[a-z0-9-]+$` | Tested against the URL path. Empty = all paths. |
 
-- フォールバック動作
+Duplicate links are removed. If the clipboard cannot be written, the popup shows the links in a text area so you can copy them by hand.
 
-  - ホストが判別できない場合はまず Qiita ヒューリスティックを試し、見つからなければ Zenn ヒューリスティックを試します。
-  - ホストが判別できても、優先ヒューリスティックでリンクが見つからない場合は逆のヒューリスティックを試して検出率を上げます。
+## Permissions
 
-- 重複排除
-  - 同一 URL の重複は除外して一意なリストを作成します。
+- `tabs` — read the URLs of your tabs.
+- `activeTab`, `scripting` — read the links in the current page for custom buttons.
+- `storage` — save custom buttons and the language setting.
 
-コピー方法（優先順）
+## Load unpacked (development)
 
-1. ポップアップ内での navigator.clipboard.writeText
-2. ポップアップ内の一時 textarea と document.execCommand('copy') を使うフォールバック
-3. ページコンテキストにスクリプトを注入してページ側の clipboard API で書き込む
+1. Open `chrome://extensions` and turn on **Developer mode**.
+2. Click **Load unpacked** and select this folder.
 
-どれも失敗した場合は、ポップアップ内にコピー済みテキストを表示するテキストエリアが出るので手動でコピーできます。
+| File | Role |
+| --- | --- |
+| `manifest.json` | Manifest (MV3) |
+| `popup.html` / `popup.js` / `popup.css` | Popup UI, tab URL collection, clipboard copy with fallbacks |
+| `background.js` | Service worker: collects matching links in the active tab for custom buttons |
+| `options.html` / `options.js` / `options.css` | Custom button settings, export / import |
+| `storage.js` | Custom button storage and validation |
+| `i18n.js`, `_locales/` | English / Japanese strings |
 
-使い方（ローカルでの読み込み）
+---
 
-1. Chrome を開き chrome://extensions にアクセス
-2. 右上の "デベロッパーモード" を有効にする
-3. "パッケージ化されていない拡張機能を読み込む"（Load unpacked）をクリックし、このフォルダ（`copy-links`）を選択
-4. 任意の Qiita または Zenn の一覧ページ（例: 記事一覧やランキング、タグ一覧など）を開き、拡張のアイコンをクリックしてポップアップの「Copy links」ボタンを押す
+## 日本語
 
-注意・トラブルシューティング
+開いているタブの URL を、1行に1つずつクリップボードにコピーする Chrome 拡張機能（Manifest V3）です。
 
-- 自動でクリップボードに入らない
+**インストール：** [Chrome ウェブストア](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)　／　**紹介動画：** [YouTube](https://youtu.be/eUM-HaXOtsk)
 
-  - ブラウザやページのセキュリティポリシーにより clipboard API が拒否される場合があります。その場合はポップアップに表示されるテキストエリアから手動でコピーしてください。
+### できること
 
-- 期待するリンクが見つからない
+- **全タブの URL をコピー**：今のウィンドウのタブをすべて、ワンクリックで。
+- **選択中のタブの URL をコピー**：Ctrl / Cmd + クリックで選んだタブだけ。
+- **カスタムボタン**：開いているページの中から、ホスト名と（任意の）パスの正規表現に合うリンクを集めてコピー（記事一覧ページの記事リンクなど）。初期状態で Qiita の記事リンク用のボタンが入っています。
+- **エクスポート / インポート**：カスタムボタンを JSON で書き出し・読み込み。
+- **日本語 / English**：ポップアップの設定（歯車）から切り替え。
+- **外部送信なし**：リンクの収集はブラウザ内で完結します。
 
-  - Qiita の場合、拡張はテーブル要素内の `/items/` を含むリンクを優先的に抽出します。もし別レイアウト（カード表示など）だと検出できない可能性があります。その場合、一覧ページのレイアウトに合わせて拡張を修正する必要があります。
+### 使い方
 
-- 権限・プライバシー
-  - 使用する権限: `scripting`, `activeTab`, `tabs`（ページにスクリプトを注入してリンク抽出や、必要に応じてページ側のクリップボード API を利用するため）。
-  - ページの内容はローカルで解析するのみで外部に送信しません。
+1. ツールバーのアイコンをクリックしてポップアップを開く
+2. 「全タブのURLをコピー」「選択中のタブのURLをコピー」、またはカスタムボタンを押す
+3. 好きな場所に貼り付ける
 
-開発メモ
+カスタムボタンの追加・編集は、ポップアップの歯車 →「カスタムボタンの管理」から。ホスト名は完全一致（URL を貼るとホスト名だけが取り出されます）、正規表現は URL のパス部分に対して判定し、空ならすべてのパスが対象です。重複したリンクは除かれます。クリップボードへの書き込みに失敗したときは、ポップアップにテキストエリアが出るので手動でコピーしてください。
 
-- メイン実装ファイル
-  - `background.js` — アクティブタブ上でのリンク収集ロジック（ドメイン別のヒューリスティックを実装）
-  - `popup.js` — ポップアップの UI とコピー処理（複数のフォールバックを含む）
-  - `popup.html` — ポップアップの HTML
-  - `manifest.json` — マニフェスト（Manifest V3）
+### 権限
 
-要望 or 変更案
+- `tabs`：タブの URL を読む
+- `activeTab`、`scripting`：カスタムボタンで、表示中のページのリンクを読む
+- `storage`：カスタムボタンと言語設定を保存する
 
-- Qiita 以外のパターン（カード表示など）や、追加のサイトに対応したい場合は、`background.js` のドメイン別ロジックを拡張すると良いです。
-- README の英語版が必要であれば追加できます。
+### ローカルで読み込む
 
-ライセンス
-
-特に指定がなければご自由にお使いください（必要なら明示的に追加します）。
+1. `chrome://extensions` を開き「デベロッパーモード」をオンにする
+2. 「パッケージ化されていない拡張機能を読み込む」でこのフォルダを選ぶ
