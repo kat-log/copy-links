@@ -59,7 +59,7 @@ Duplicate links are removed. If the clipboard cannot be written, the popup shows
 
 開いているタブの URL を、1行に1つずつクリップボードにコピーする Chrome 拡張機能（Manifest V3）です。
 
-**インストール：** [Chrome ウェブストア](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)　／　**紹介動画：** [YouTube](https://youtu.be/eUM-HaXOtsk)　／　**紹介ページ：** [kat-log.github.io/copy-links](https://kat-log.github.io/copy-links/)
+**インストール：** [Chrome ウェブストア](https://chromewebstore.google.com/detail/ohiamlgdahmmkadngmcjiiedncmoegnd)　／　**紹介動画：** [YouTube](https://youtu.be/gjAlIcF5pnM)　／　**紹介ページ：** [kat-log.github.io/copy-links](https://kat-log.github.io/copy-links/)
 
 ### できること
 
